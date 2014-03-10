@@ -36,6 +36,17 @@ Examples
 
 Please find the example files/scripts under the `examples/` subdirectory.
 
+Screenshots
+-----------
+
+Sample Screenshots
+
+![Crop Circles](http://web.iiit.ac.in/~anubhav.jaiswal/TA3D/Circle.png)
+
+---
+
+![Helix](http://web.iiit.ac.in/~anubhav.jaiswal/TA3D/Helix.png)
+
 
 Caveats
 -------
