@@ -52,5 +52,5 @@ Caveats
 -------
 
 + Script support is a ad-hoc at the moment
-+ running a script displays the result for 5 minutes and closes afterwards
++ running a script displays the result for 5 seconds and closes afterwards
 + Nested block statements are not supported at the moment
