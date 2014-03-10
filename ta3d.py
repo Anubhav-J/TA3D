@@ -1,8 +1,20 @@
+#!/usr/bin/python
+
+################################################################################
+# Author: Anubhav Jaiswal                                                      #
+# Email: anubhav2503@gmail.com                                                 #
+# This is a prototype for the 3D Turtle Art Activity which is part of Sugar.   #
+################################################################################
+
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 import math
+import time
+
+#mul_factor=1
 
 class Turtle():
     def __init__(self):
@@ -21,6 +33,9 @@ class Turtle():
         self.moves_list = [[0.0,0.0,0.0,True]]
         
     def forward(self, value):
+        #global mul_factor
+        #value = value * mul_factor
+        #mul_factor+=0.01
         self.x = self.x + (value * self.direction[0])
         self.y = self.y + (value * self.direction[1])
         self.z = self.z + (value * self.direction[2])
@@ -51,7 +66,7 @@ class Turtle():
         temp.append((self.direction[0] * -1.0 * math.sin(theta)) + (self.direction[1] * math.cos(theta)))
         temp.append(self.direction[2] * 1.0)
         self.direction = temp
-        print self.direction
+        #print self.direction
  
     def penup(self):
         self.penDown = False
@@ -134,36 +149,68 @@ def display():
     command()
 
 def command():
+    """ Command parsing and execution function """
+    def exec_single_command(tokens):
+        """ Executes a single command
+            Requires, command name, tokens
+        """
+        func = tokens[0].lower()
+
+        if func == 'fd':
+            value = float(tokens[1])
+            pen.forward(value)
+            pen.moves_list.append([pen.x,pen.y,pen.z,pen.penDown])
+        elif func == 'rx':
+            value = float(tokens[1])
+            pen.roll(value)
+        elif func == 'ry':
+            value = float(tokens[1])
+            pen.pitch(value)
+        elif func == 'rz':
+            value = float(tokens[1])
+            pen.yaw(value)
+        elif func == 'setxyz':
+            valX = float(tokens[1])
+            valY = float(tokens[2])
+            valZ = float(tokens[3])
+            pen.setxyz(valX, valY, valZ)
+        elif func == 'pen':
+            if tokens[1] == 'd':
+                pen.pendown()
+            elif tokens[1] == 'u':
+                pen.penup()
+        elif func == 'reset':
+            pen.direction = [1.0, 0.0, 0.0]
     
-    cmd = raw_input("> ")
+    try: 
+        cmd = raw_input("> ")
+    except EOFError:
+        print "Caught EOF, terminating"
+        time.sleep(5)
+        sys.exit(1)
+
     tokens = cmd.split(' ')
     func = tokens[0].lower()
 
-    if func == 'f':
-        value = float(tokens[1])
-        pen.forward(value)
-        pen.moves_list.append([pen.x,pen.y,pen.z,pen.penDown])
-    elif func == 'rx':
-        value = float(tokens[1])
-        pen.roll(value)
-    elif func == 'ry':
-        value = float(tokens[1])
-        pen.pitch(value)
-    elif func == 'rz':
-        value = float(tokens[1])
-        pen.yaw(value)
-    elif func == 'setxyz':
-        valX = float(tokens[1])
-        valY = float(tokens[2])
-        valZ = float(tokens[3])
-        pen.setxyz(valX, valY, valZ)
-    elif func == 'pen':
-        if tokens[1] == 'd':
-            pen.pendown()
-        elif tokens[1] == 'u':
-            pen.penup()
-    elif func == 'reset':
-        pen.direction = [1.0, 0.0, 0.0]
+    if func in ['fd', 'rx', 'ry', 'rz', 'setxyz', 'pen', 'reset']:
+        exec_single_command(tokens)
+
+    elif func == 'repeat':
+        count = int(tokens[1])
+        cmd_r = raw_input(">> ")
+        cmd_list = []
+        while cmd_r != 'end':
+            #print cmd_r
+            cmd_list.append(cmd_r)    
+            cmd_r = raw_input(">> ")
+        # reverse list
+        cmd_list.reverse()
+        # Exec commands in list
+        # TODO: handle malicious and/or multi-statement commands written within repeat
+        for i in xrange(count):
+            for cmd in cmd_list:
+                exec_single_command(cmd.split(' '))
+        
     elif func == 'x':
         sys.exit()
     
