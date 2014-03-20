@@ -1,4 +1,4 @@
-Turle Art 3D Prototype
+Turtle Art 3D Prototype
 ======================
 
 How to run
