@@ -31,6 +31,11 @@ class Turtle():
         self.direction = [1.0 , 0.0 , 0.0]
 
         self.moves_list = [[0.0,0.0,0.0,True]]
+        self.colors_list = [[1.0,1.0,1.0]]
+
+        self.colorR = 1.0
+        self.colorG = 1.0
+        self.colorB = 1.0
         
     def forward(self, value):
         #global mul_factor
@@ -81,6 +86,11 @@ class Turtle():
         self.moves_list.append([x, y, z, False]) # Add 1 extra element for next starting point after many setxyz
         if self.moves_list[-1][3] == False:
             self.moves_list[-1] = [x, y, z, False]
+
+    def setcolor(self, r, g, b):
+        self.colorR = r
+        self.colorG = g
+        self.colorB = b
 
 def initRendering():
 
@@ -160,6 +170,7 @@ def command():
             value = float(tokens[1])
             pen.forward(value)
             pen.moves_list.append([pen.x,pen.y,pen.z,pen.penDown])
+            pen.colors_list.append([pen.colorR,pen.colorG,pen.colorB])
         elif func == 'rx':
             value = float(tokens[1])
             pen.roll(value)
@@ -181,6 +192,11 @@ def command():
                 pen.penup()
         elif func == 'reset':
             pen.direction = [1.0, 0.0, 0.0]
+        elif func == 'setcolor':
+            red = float(tokens[1])
+            green = float(tokens[2])
+            blue = float(tokens[3])
+            pen.setcolor(red,green,blue)
     
     try: 
         cmd = raw_input("> ")
@@ -192,7 +208,7 @@ def command():
     tokens = cmd.split(' ')
     func = tokens[0].lower()
 
-    if func in ['fd', 'rx', 'ry', 'rz', 'setxyz', 'pen', 'reset']:
+    if func in ['fd', 'rx', 'ry', 'rz', 'setxyz', 'pen', 'reset','setcolor']:
         exec_single_command(tokens)
 
     elif func == 'repeat':
@@ -305,8 +321,14 @@ def drawLines():
         dest = j
         if j[3] is False:
             continue
+        
+        ind = len(pen.moves_list) - 1 - pen.moves_list[::-1].index(j)
+        red = pen.colors_list[ind][0]
+        green = pen.colors_list[ind][1]
+        blue = pen.colors_list[ind][2]
+        glColor3f(red, green, blue)
+        
         glBegin(GL_LINES)
-        glColor3f(1.0,1.0,1.0)
         glVertex3f(j[0],j[1],j[2])
         glVertex3f(i[0],i[1],i[2])
         glEnd()

@@ -29,6 +29,7 @@ List of Supported Commands
 1. `repeat <value>` ; starts a repeat block and repeats
     the command preceeeding it `<value>` number of times
 1. `end` ; marks the end of a repeat block.
+1. `setcolor <red> <green> <blue>` ; Set the color of turtle (value between 0 and 1)
 1. `x` ; exit the interactive turtle shell.
 
 Examples
